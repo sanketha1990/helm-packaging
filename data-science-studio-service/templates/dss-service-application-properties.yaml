@@ -82,8 +82,8 @@ data:
     ngp.register.enabled=true
     ngp.register.service.id=data-science-studio-app-v2
     ngp.register.service.name=Data Science Studio App V2
-    #ngp.register.service.url=http://10.113.104.24:30111/
-    ngp.register.service.url=http://{{ .Values.tenant }}.hypersense.ai:{{ .Values.dssServiceApplication.ingress.port }}/{{ .Values.tenant }}/dss-ui
+    ngp.register.service.url=http://10.113.104.24:30111/
+    #ngp.register.service.url=http://{{ .Values.tenant }}.hypersense.ai:{{ .Values.dssServiceApplication.ingress.port }}/{{ .Values.tenant }}/dss-ui
     ngp.register.service.description=Data Science Studio App V2
     ngp.register.service.create.default.users=true
 
@@ -94,7 +94,7 @@ data:
     ngp.register.apiservice.roles=configuration_view
 
     ngp.register.force.delete=false
-    ngp.airflow-wrapper-service.url = http://10.113.104.24:30333/
+    ngp.airflow-wrapper-service.url = http://10.113.104.24:31353/data-science-studio-airflow-operator/
     upload.directory = /upload
     ngp.security.enabled=false
     server.servlet.context-path=/dss-app-service

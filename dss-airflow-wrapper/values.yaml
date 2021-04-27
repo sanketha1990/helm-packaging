@@ -88,7 +88,7 @@ airflowWrapper:
     apiVersion: networking.k8s.io/v1beta1
     annotations:
       class: kong
-      path: false
+      path: true
     name: dss-airflow-service-ingress
     path: dss-airflow-service
 
