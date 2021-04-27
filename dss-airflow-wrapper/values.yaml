@@ -3,9 +3,9 @@ tenant: helm-template
 airflowWrapper:
   name: dss-airflow-service-service
   image:
-    registry: REGISTRY_HOST
-    repository: REGISTRY_PROJECT/dss-airflow-service-service
-    tag: "BUILD_NUMBER"
+    registry: 10.113.56.67
+    repository: ngp-develop/dss-airflow-service-service
+    tag: "20210422195110"
   imagePullPolicy: IfNotPresent
   type: ClusterIP
   ports:

@@ -3,9 +3,9 @@ tenant: helm-template
 dssServiceApplication:
   name: data-science-studio-app-service
   image:
-    registry: REGISTRY_HOST
-    repository: REGISTRY_PROJECT/data-science-studio-service
-    tag: "BUILD_NUMBER"
+    registry: 10.113.56.67
+    repository: ngp-develop/data-science-studio-service
+    tag: "20210424154121"
   pullPolicy: "IfNotPresent"
 
   replicas: 1

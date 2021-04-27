@@ -3,9 +3,9 @@ tenant: helm-template
 dssClintApplication:
   name: data-science-studio-app-client
   image:
-    registry: REGISTRY_HOST
-    repository: REGISTRY_PROJECT/data-science-studio-ui
-    tag: "BUILD_NUMBER"
+    registry: 10.113.56.67
+    repository: ngp-develop/data-science-studio-ui
+    tag: "20210423145325"
   imagePullPolicy: IfNotPresent
   replicas: 1
   type: ClusterIP

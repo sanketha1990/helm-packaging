@@ -3,9 +3,9 @@ airflow:
   name: airflow-webserver
   replicas: 1 
   image:
-    registry: REGISTRY_HOST
-    repository: REGISTRY_PROJECT/dss-airflow-operators
-    tag: "BUILD_NUMBER"
+    registry: 10.113.56.67
+    repository: ngp-develop/dss-airflow-operators
+    tag: "20210422172713"
     pullPolicy: IfNotPresent
   loadex: "n"
   executor: Local
