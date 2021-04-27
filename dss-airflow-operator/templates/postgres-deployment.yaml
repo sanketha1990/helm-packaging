@@ -1,0 +1,33 @@
+{{- if .Values.services.postgres.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.postgres.name}}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app: {{ .Values.postgres.name}}
+spec:
+  replicas: {{ .Values.postgres.replicas}}
+  selector:
+    matchLabels:
+      app: {{ .Values.postgres.name}}
+  template:
+    metadata:      
+      labels:
+        app: {{ .Values.postgres.name}}
+    spec:
+      containers:
+        - name: {{ .Values.postgres.name}}
+          image: {{ .Values.postgres.image}}
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: {{ .Values.postgres.ports.containerPort}}
+              name: {{ .Values.postgres.ports.name}}
+          env:
+          - name: POSTGRES_DB
+            value: {{ .Values.postgres.db}}
+          - name: POSTGRES_USER
+            value: {{ .Values.postgres.username}}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.postgres.password}}
+{{- end -}}

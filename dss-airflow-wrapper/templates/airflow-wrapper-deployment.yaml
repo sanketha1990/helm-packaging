@@ -1,0 +1,64 @@
+{{- if .Values.services.airflowWrapperService.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dss-service.api.name" . }}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app: {{ include "dss-service.api.name" . }}
+spec:
+  replicas: {{ .Values.airflowWrapper.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "dss-service.api.name" . }}
+  template:
+    metadata:      
+      labels:
+        app: {{ include "dss-service.api.name" . }}
+    spec:
+      containers:
+        - name: {{ include "dss-service.api.name" . }}
+          image: {{ .Values.airflowWrapper.image.registry }}/{{ .Values.airflowWrapper.image.repository }}:{{ .Values.airflowWrapper.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.airflowWrapper.imagePullPolicy | quote }}
+          ports:
+            - containerPort: {{ .Values.airflowWrapper.ports.containerPort }}
+              name: {{ .Values.airflowWrapper.ports.name }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssConfig.path | quote }}
+            - name: shared-volume
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssShared.path | quote }} 
+            - name: logs-volume
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssLogs.path | quote }}
+            - name: dags-volume
+              mountPath:  {{ .Values.airflowWrapper.volumeMounts.dssDags.path | quote }}
+            - name: data-volume
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssData.path | quote }}
+            - name: modelrepository-volume 
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssModelrepository.path | quote }}
+            - name: output-volume
+              mountPath: {{ .Values.airflowWrapper.volumeMounts.dssOutput.path | quote }}
+              
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Values.airflowWrapper.volumeMounts.dssConfig.claimName }}
+        - name: shared-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssShared.claimName }}
+        - name: dags-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssDags.claimName }}
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssData.claimName }}
+        - name: logs-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssLogs.claimName }}
+        - name: modelrepository-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssModelrepository.claimName }}
+        - name: output-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflowWrapper.volumeMounts.dssOutput.claimName }}
+{{- end -}}

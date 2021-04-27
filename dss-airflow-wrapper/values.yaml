@@ -1,0 +1,101 @@
+########################### Airflow wrapper ########################################
+tenant: helm-template
+airflowWrapper:
+  name: dss-airflow-service-service
+  image:
+    registry: REGISTRY_HOST
+    repository: REGISTRY_PROJECT/dss-airflow-service-service
+    tag: "BUILD_NUMBER"
+  imagePullPolicy: IfNotPresent
+  type: ClusterIP
+  ports:
+    containerPort: 8080
+    name: http
+    nodePort: 30333
+  volumeMounts:
+    dssConfig: 
+      claimName: dss-airflow-service-application-properties
+      path: /deployments/config
+    dssShared:
+      claimName: shared-pv-claim
+      path: /root/.ngp
+    dssLogs:
+      claimName: logs-pvc
+      path: /usr/local/airflow/logs
+    dssDags:
+      claimName: dags-pvc
+      path: /usr/local/airflow/dags
+    dssData:
+      claimName: data-pvc
+      path: /usr/local/airflow/data
+    dssOutput:
+      claimName: output-pvc
+      path: /usr/local/airflow/output
+    dssModelrepository:
+      claimName: modelrepository-pvc
+      path: /usr/local/airflow/modelrepository
+
+  environment:
+    servicePrecondition: "ngp-postgres:5432"
+
+  sharedVolumes:
+    uploadPVC:
+      name: uploads-pv-claim
+      appLabel: ngp
+      storage: 1
+    configPVC:
+      name: config-pvc
+      appLabel: ngp
+      storage: 1
+    scriptPVC:
+      name: script-pvc
+      appLabel: ngp
+      storage: 1
+    sharedPVC:
+      name: shared-pv-claim
+      appLabel: ngp
+      storage: 1
+    dagsPVC:
+      name: dags-pvc
+      appLabel: ngp
+      storage: 1
+    logsPVC:
+      name: logs-pvc
+      appLabel: ngp
+      storage: 1
+    outputPVC:
+      name: output-pvc
+      appLabel: ngp
+      storage: 1
+    dataPVC:
+      name: data-pvc
+      appLabel: ngp
+      storage: 1
+    modelrepositoryPVC:
+      name: modelrepository-pvc
+      appLabel: ngp
+      storage: 1
+    daskDataPVC:
+      name: dask-data-pvc
+      appLabel: ngp
+      storage: 1
+    dbPVC:
+      name: db-pvc
+      appLabel: ngp
+      storage: 1
+
+  ingress:
+    apiVersion: networking.k8s.io/v1beta1
+    annotations:
+      class: kong
+      path: false
+    name: dss-airflow-service-ingress
+    path: dss-airflow-service
+
+
+############################ Enable/Disable application services ##############################
+services:
+  airflowWrapperIngress:
+      enabled: true
+  airflowWrapperService:
+      enabled: true 

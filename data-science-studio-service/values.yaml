@@ -1,0 +1,45 @@
+############################ DSS middle layer (service) #####################################
+tenant: helm-template
+dssServiceApplication:
+  name: data-science-studio-app-service
+  image:
+    registry: REGISTRY_HOST
+    repository: REGISTRY_PROJECT/data-science-studio-service
+    tag: "BUILD_NUMBER"
+  pullPolicy: "IfNotPresent"
+
+  replicas: 1
+  type: ClusterIP
+  ports:
+    port: 8080
+    name: http
+  volumeMounts:
+    configMapName: data-science-studio-application-properties-v1
+    configName: config-volume
+    configMountPath:  /deployments/config
+
+    sharedName: shared-volume
+    sharedMountPath: /root/.ngp
+    sharedClaimName: shared-pv-claim
+
+    uploadName: upload-volume
+    uploadMountPath: /upload
+    uploadClaimName: uploads-pv-claim
+  environment:
+    servicePrecondition: "ngp-postgres:5432"
+
+  ingress:
+    port: 31353
+    apiVersion: networking.k8s.io/v1beta1
+    annotations:
+      class: kong
+      path: false
+    name: dss-app-service-ingress
+    path: dss-app-service
+
+############################ Enable/Disable application services ##############################
+services:
+  dssServiceService:
+      enabled: true
+  dssServiceIngress:
+      enabled: true

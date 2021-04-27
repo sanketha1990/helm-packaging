@@ -1,0 +1,158 @@
+apiVersion: v1
+kind: PersistentVolumeClaim        # Create a PersistentVolumeClaim to request a PersistentVolume storage
+metadata:                          # Claim name and labels
+  name: {{ .Values.airflowWrapper.sharedVolumes.uploadPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.uploadPVC.name }}
+spec:                              # Access mode and resource limits
+  accessModes:
+    - ReadWriteMany                # ReadWriteMany means the volume can be mounted as read-write by many Nodes
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.uploadPVC.storage }}Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.configPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.configPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.configPVC.storage }}Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.scriptPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.scriptPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.scriptPVC.storage }}Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.sharedPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.sharedPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.sharedPVC.storage }}Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.dagsPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app:  {{ .Values.airflowWrapper.sharedVolumes.dagsPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage:  {{ .Values.airflowWrapper.sharedVolumes.dagsPVC.storage }}Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.logsPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.logsPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.logsPVC.storage }}Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.outputPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.outputPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.outputPVC.storage }}Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.dataPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.dataPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.dataPVC.storage }}Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1 
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.modelrepositoryPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.modelrepositoryPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.modelrepositoryPVC.storage }}Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.daskDataPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.daskDataPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.daskDataPVC.storage }}Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.airflowWrapper.sharedVolumes.dbPVC.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.airflowWrapper.sharedVolumes.dbPVC.appLabel }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflowWrapper.sharedVolumes.dbPVC.storage }}Gi

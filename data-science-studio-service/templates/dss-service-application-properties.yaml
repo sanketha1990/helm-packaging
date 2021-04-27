@@ -1,0 +1,114 @@
+{{- if .Values.services.dssServiceService.enabled -}}
+apiVersion: v1
+data:
+  application.properties: |-
+    ################################ Spring Default Properties ##################################
+
+    spring.application.name=data-science-studio
+    springfox.documentation.swagger.v2.path=/api-docs
+    server.contextPath=/
+    server.port=8080
+    spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false
+    spring.jpa.show-sql=false
+    spring.datasource.hikari.connectionTimeout=20000
+    spring.datasource.hikari.maximumPoolSize=5
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+    spring.jpa.properties.hibernate.format_sql=false
+    ###########################################################################################
+
+
+
+    ################################ Database Properties ######################################
+
+    spring.datasource.url=jdbc:postgresql://ngp-postgres:9001/datascienceapi
+    spring.datasource.username=postgres
+    spring.datasource.password=postgres
+    spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+    ###########################################################################################
+
+    ############################### oracle Properties ############################
+   
+    spring.oracle.url=
+    spring.oracle.username=
+    spring.oracle.password=
+
+
+    ################################ Flyway Properties ########################################
+
+    spring.flyway.locations=classpath:/flyway/migration
+    spring.flyway.url=jdbc:postgresql://ngp-postgres:9001/datascienceapi
+    spring.flyway.schemas=public
+    spring.flyway.user=postgres
+    spring.flyway.password=postgres
+    spring.flyway.baselineVersion=0.0.1
+    spring.flyway.baselineOnMigrate=false
+    spring.flyway.enabled=true
+    spring.flyway.runFlyWay.afterJPA=true
+    spring.flyway.clean-on-validation-error=true
+    ##########################################################################################
+
+
+    ################################ Keycloak Properties ########################################
+
+    keycloak.realm=sys-testing
+    keycloak.resource=data-science-studio-service-v2
+    keycloak.auth-server-url=http://10.113.104.24:31353/auth
+    keycloak.ssl-required=external
+    keycloak.public-client=true
+    keycloak.bearer-only=true
+    keycloak.principal-attribute=preferred_username
+    keycloak.cors=true
+    keycloak.use-resource-role-mappings=true
+
+    ##########################################################################################
+
+    ngp.register_server.token_uri=http://ngp-keycloak:8080/auth/realms/sys-testing/protocol/openid-connect/token
+    ngp.register_server.client_id=common-services-apiservice
+    ngp.common-services.apiservice.url=http://ngp-common-services-service:8080
+
+
+    ################################ NGP Application Registration Properties ###############################
+    // adding code for cln
+    ngp.register.attribute.parentClientId =
+    ngp.register.attribute.isParent = true
+    ngp.register.attribute.landingPageClientDisplayName = Data Science Studio
+    ngp.register.attribute.landingPageClientDescription = One Stop Solution to handle the data flow
+    ngp.register.attribute.landingPageIcon = assets/images/datastorage.svg
+    ngp.register.attribute.leftMenuIcon = storage
+    ngp.register.attribute.leftMenuDisplayName = Data Science
+    ngp.register.attribute.subMenuData =
+    
+    ngp.register.enabled=true
+    ngp.register.service.id=data-science-studio-app-v2
+    ngp.register.service.name=Data Science Studio App V2
+    #ngp.register.service.url=http://10.113.104.24:30111/
+    ngp.register.service.url=http://{{ .Values.tenant }}.hypersense.ai:{{ .Values.dssServiceApplication.ingress.port }}/{{ .Values.tenant }}/dss-ui
+    ngp.register.service.description=Data Science Studio App V2
+    ngp.register.service.create.default.users=true
+
+    ngp.register.apiservice.enabled=false
+    ngp.register.apiservice.id=data-science-studio-service-v2
+    ngp.register.apiservice.name=Data Science Studio Service V2
+    ngp.register.apiservice.description=Data Science Studio Service V2
+    ngp.register.apiservice.roles=configuration_view
+
+    ngp.register.force.delete=false
+    ngp.airflow-wrapper-service.url = http://10.113.104.24:30333/
+    upload.directory = /upload
+    ngp.security.enabled=false
+    server.servlet.context-path=/dss-app-service
+
+    spring.servlet.multipart.max-file-size=200MB
+    spring.servlet.multipart.max-request-size=200MB
+
+    ###############################Logproperties##################################################
+
+    logging.pattern.console= %clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){yellow} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} [%F] [%M] [%C]:%L %clr(---){faint} %clr([%t]){faint} ${hostName} %clr(%logger{39}){cyan} %clr(:){faint} %m %throwable{short.className} %X{correlationId} %X{userId} %X{sessionId} %X{serviceName} %n%n
+
+
+kind: ConfigMap
+metadata:
+  name: data-science-studio-application-properties-v1
+
+{{- end -}}

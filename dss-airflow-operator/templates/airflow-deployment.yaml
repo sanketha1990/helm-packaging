@@ -1,0 +1,94 @@
+{{- if .Values.services.airflow.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dss-service.client.name" . }}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app: {{ include "dss-service.client.name" . }}
+spec:
+  replicas: {{ .Values.airflow.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "dss-service.client.name" . }}
+  template:
+    metadata:      
+      labels:
+        app: {{ include "dss-service.client.name" . }}
+    spec:
+      volumes:
+      - name: dags-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssDags.claimName }}
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssData.claimName }}
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssLogs.claimName }}
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssDb.claimName }}
+      - name: modelrepository-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssModelrepository.claimName }}
+      - name: dask-data-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.airflow.volumeMounts.dssDaskData.claimName }}
+      - name: output-volume
+        persistentVolumeClaim:
+          claimName:  {{ .Values.airflow.volumeMounts.dssOutput.claimName }}
+
+      containers:
+        - name: {{ include "dss-service.client.name" . }}
+          image:  {{ .Values.airflow.image.registry }}/{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy | quote}}
+          ports:
+            - containerPort: {{ .Values.airflow.ports.airflowPort }}
+              name: {{ .Values.airflow.ports.name }}
+          env:
+          - name : AIRFLOW__WEBSERVER__BASE_URL
+            value: {{ .Values.airflow.baseUrlPath }}
+          - name: LOAD_EX
+            value: {{ .Values.airflow.loadex | quote }}
+          - name: EXECUTOR
+            value: {{ .Values.airflow.executor | quote }}
+          - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+            value: sqlite:////usr/local/airflow/db/airflow.db"
+          - name: POSTGRES_HOST
+            value: {{ .Values.airflow.host }}
+          - name: POSTGRES_PORT
+            value: {{ .Values.airflow.ports.postgresPort | quote }}
+          - name: POSTGRES_USER
+            value: {{ .Values.airflow.username }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.airflow.password }}
+          - name: POSTGRES_DB
+            value: {{ .Values.airflow.db }}
+          - name: SECURITY__ADMIN_USERNAME
+            value: {{ .Values.airflow.security.username }}
+          - name: SECURITY__ADMIN_FIRSTNAME
+            value: {{ .Values.airflow.security.firstname }}
+          - name: SECURITY__ADMIN_LASTNAME
+            value: {{ .Values.airflow.security.lastname }}
+          - name: SECURITY__ADMIN_EMAIL
+            value: {{ .Values.airflow.security.email }}
+          - name: SECURITY__ADMIN_PASSWORD
+            value: {{ .Values.airflow.security.password }}
+
+          volumeMounts:
+          - mountPath: {{ .Values.airflow.volumeMounts.dssLogs.path | quote }}
+            name: logs-volume
+          - mountPath: {{ .Values.airflow.volumeMounts.dssDags.path | quote }}
+            name: dags-volume
+          - mountPath: {{ .Values.airflow.volumeMounts.dssDb.path | quote }}
+            name: db-volume
+          - mountPath: {{ .Values.airflow.volumeMounts.dssData.path | quote }}
+            name: data-volume
+          - mountPath: {{ .Values.airflow.volumeMounts.dssModelrepository.path | quote }}
+            name: modelrepository-volume
+          - mountPath: {{ .Values.airflow.volumeMounts.dssDaskData.path | quote }}
+            name: dask-data-volume 
+          - mountPath: {{ .Values.airflow.volumeMounts.dssOutput.path | quote }}
+            name: output-volume
+{{- end -}}

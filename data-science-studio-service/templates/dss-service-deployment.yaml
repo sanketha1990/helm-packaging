@@ -1,0 +1,44 @@
+{{- if .Values.services.dssServiceService.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dss-service.api.name" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "dss-service.api.name" . }}
+spec:
+  replicas: {{ .Values.dssServiceApplication.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "dss-service.api.name" . }}
+  template:
+    metadata:      
+      labels:
+        app: {{ include "dss-service.api.name" . }}
+    spec:
+      containers:
+        - name: {{ include "dss-service.api.name" . }}
+          image: {{ .Values.dssServiceApplication.image.registry }}/{{ .Values.dssServiceApplication.image.repository }}:{{ .Values.dssServiceApplication.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.dssServiceApplication.pullPolicy | quote }} 
+          ports:
+            - containerPort: {{ .Values.dssServiceApplication.ports.port }}
+              name: {{ .Values.dssServiceApplication.ports.name }}
+          volumeMounts:
+            - name: {{ .Values.dssServiceApplication.volumeMounts.configName }}
+              mountPath: {{ .Values.dssServiceApplication.volumeMounts.configMountPath }}
+            - name: {{ .Values.dssServiceApplication.volumeMounts.sharedName }}
+              mountPath: {{ .Values.dssServiceApplication.volumeMounts.sharedMountPath }}
+            - name: {{ .Values.dssServiceApplication.volumeMounts.uploadName }}
+              mountPath: {{ .Values.dssServiceApplication.volumeMounts.uploadMountPath }}
+      volumes:
+        - name: {{ .Values.dssServiceApplication.volumeMounts.configName }}
+          configMap:
+            name: data-science-studio-application-properties-v1
+        - name: {{ .Values.dssServiceApplication.volumeMounts.sharedName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.dssServiceApplication.volumeMounts.sharedClaimName }}
+        - name: {{ .Values.dssServiceApplication.volumeMounts.uploadName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.dssServiceApplication.volumeMounts.uploadClaimName }}
+
+{{- end -}}

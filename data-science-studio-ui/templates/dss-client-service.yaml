@@ -1,0 +1,19 @@
+{{- if .Values.services.dssClientService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dss-service.client.name" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "dss-service.client.name" . }}
+spec:
+  type: {{ .Values.dssClintApplication.type }}
+  ports:
+    - port: {{ .Values.dssClintApplication.ports.port }}
+      {{- if and (or (eq .Values.dssClintApplication.type "NodePort") (eq .Values.dssClintApplication.type "LoadBalancer")) (not (empty .Values.dssClintApplication.ports.nodePort)) }}
+      nodePort: {{ .Values.dssClintApplication.ports.nodePort }}
+      {{- end }}
+      name: {{ .Values.dssClintApplication.ports.name }}
+  selector:
+          app: {{ include "dss-service.client.name" . }}
+{{- end -}}

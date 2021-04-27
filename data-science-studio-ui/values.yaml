@@ -1,0 +1,43 @@
+############################ DSS UI (Client) service ########################################
+tenant: helm-template
+dssClintApplication:
+  name: data-science-studio-app-client
+  image:
+    registry: REGISTRY_HOST
+    repository: REGISTRY_PROJECT/data-science-studio-ui
+    tag: "BUILD_NUMBER"
+  imagePullPolicy: IfNotPresent
+  replicas: 1
+  type: ClusterIP
+  ports:
+    port: 80
+    nodePort: 30111
+    name: http
+  volumeMounts:
+    name: config-volume
+    mountPath: /usr/share/nginx/html/assets/conf/api.config.json
+    subPath: api.config.json
+  volumes:
+    configMapName: data-science-studio-api-config-v2
+
+  ingress:
+    gatewayUrl: http://10.113.104.24/31353 
+    port: 31353
+    annotations:
+      class: kong
+      path: true
+    name: dss-ui
+    path: dss-ui
+###################################################
+  commonServicesApiUrl: http://10.113.104.24:32311
+  apiUrl: http://10.113.104.24:31353/dss-app-service
+  keycloackConfig:
+    authUrl: http://10.113.104.24:31353/auth
+    realm: sys-testing
+    clientId: data-science-studio-app-v2
+############################ Enable/Disable application services ##############################
+services:
+  dssClientService:
+      enabled: true
+  dssClientIngress:
+      enabled: true

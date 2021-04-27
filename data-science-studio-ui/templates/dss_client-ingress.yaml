@@ -1,0 +1,19 @@
+{{- if .Values.services.dssClientIngress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.dssClintApplication.ingress.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.dssClintApplication.ingress.annotations.class }}
+    konghq.com/strip-path: {{ .Values.dssClintApplication.ingress.annotations.path | quote }}
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /{{ .Values.dssClintApplication.ingress.name }}
+        pathType: Prefix
+        backend:
+          serviceName: {{ include "dss-service.client.name" . }}
+          servicePort: {{ .Values.dssClintApplication.ports.name }}
+{{- end -}}

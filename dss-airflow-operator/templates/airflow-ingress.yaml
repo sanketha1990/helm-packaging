@@ -1,0 +1,19 @@
+{{- if .Values.services.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.airflow.ingress.name }}
+  namespace: {{ .Values.tenant }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.airflow.ingress.annotations.class }}
+    konghq.com/strip-path: {{ .Values.airflow.ingress.annotations.path | quote }}
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /{{ .Values.airflow.ingress.path }}
+        backend:
+          serviceName: {{ include "dss-service.client.name" . }}
+          servicePort: {{ .Values.airflow.ports.airflowPort }}
+{{- end -}}
+

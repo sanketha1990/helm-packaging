@@ -1,0 +1,19 @@
+{{- if .Values.services.airflow.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dss-service.client.name" . }}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app: {{ include "dss-service.client.name" . }}
+spec:
+  type: {{ .Values.airflow.type }}
+  ports:
+    - port: {{ .Values.airflow.ports.airflowPort }}
+      {{- if and (or (eq .Values.airflow.type "NodePort") (eq .Values.airflow.type "LoadBalancer")) (not (empty .Values.airflow.ports.nodePort)) }}
+      nodePort: {{ .Values.airflow.ports.nodePort }}
+      {{- end }}
+      name: {{ .Values.airflow.ports.name }}
+  selector:
+   app: {{ include "dss-service.client.name" . }}
+{{- end -}}

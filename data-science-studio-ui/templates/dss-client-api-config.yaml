@@ -1,0 +1,17 @@
+{{- if .Values.services.dssClientService.enabled -}}
+apiVersion: v1
+data:
+  api.config.json: |
+    {
+      "apiUrl": {{.Values.dssClintApplication.apiUrl | quote }},
+      "keycloakConfig": {
+          "url": {{.Values.dssClintApplication.keycloackConfig.authUrl | quote }},
+          "realm": {{.Values.dssClintApplication.keycloackConfig.realm | quote }},
+          "clientId": {{.Values.dssClintApplication.keycloackConfig.clientId | quote }} 
+      },
+      "commonServicesApiUrl": {{.Values.dssClintApplication.commonServicesApiUrl | quote }} 
+    }
+kind: ConfigMap
+metadata:
+  name: data-science-studio-api-config-v2
+{{- end -}}

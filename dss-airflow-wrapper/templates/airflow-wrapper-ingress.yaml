@@ -1,0 +1,18 @@
+{{- if .Values.services.airflowWrapperIngress.enabled -}}
+apiVersion: {{ .Values.airflowWrapper.ingress.apiVersion }}
+kind: Ingress
+metadata:
+  name: {{ .Values.airflowWrapper.ingress.name }}
+  namespace: {{ .Values.tenant }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.airflowWrapper.ingress.annotations.class }}
+    konghq.com/strip-path: {{ .Values.airflowWrapper.ingress.annotations.path | quote }}
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /{{ .Values.airflowWrapper.ingress.path }}
+        backend:
+          serviceName: {{ include "dss-service.api.name" . }}
+          servicePort: {{ .Values.airflowWrapper.ports.name }}
+{{- end -}}

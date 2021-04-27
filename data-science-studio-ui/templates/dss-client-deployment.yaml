@@ -1,0 +1,39 @@
+{{- if .Values.services.dssClientService.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dss-service.client.name" . }}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app: {{ include "dss-service.client.name" . }}
+spec:
+  replicas: {{ .Values.dssClintApplication.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "dss-service.client.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "dss-service.client.name" . }}
+    spec:
+      containers:
+        - name: {{ include "dss-service.client.name" . }}
+          image: {{ .Values.dssClintApplication.image.registry }}/{{ .Values.dssClintApplication.image.repository }}:{{ .Values.dssClintApplication.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.dssClintApplication.imagePullPolicy | quote }}
+          ports:
+            - containerPort: {{ .Values.dssClintApplication.ports.port }}
+          env:
+            - name: TENANT
+              value: {{ .Values.tenant }}
+            - name: BASE_URL
+              value: http://10.113.104.24:31353/dss-ui
+          volumeMounts:
+            - name: {{ .Values.dssClintApplication.volumeMounts.name }}
+              mountPath: {{ .Values.dssClintApplication.volumeMounts.mountPath }}
+              subPath: {{ .Values.dssClintApplication.volumeMounts.subPath }}
+      volumes:
+        - name: {{ .Values.dssClintApplication.volumeMounts.name }}
+          configMap:
+            name: {{ .Values.dssClintApplication.volumes.configMapName }}
+
+{{- end -}}

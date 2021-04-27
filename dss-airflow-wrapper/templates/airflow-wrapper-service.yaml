@@ -1,0 +1,19 @@
+{{- if .Values.services.airflowWrapperService.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ include "dss-service.api.name" . }}
+  namespace: {{ .Values.tenant }}
+  labels:
+    app:  {{ include "dss-service.api.name" . }}
+spec:
+  type: {{ .Values.airflowWrapper.type }}
+  ports:
+    - port: {{ .Values.airflowWrapper.ports.containerPort }}
+      {{- if and (or (eq .Values.airflowWrapper.type "NodePort") (eq .Values.airflowWrapper.type "LoadBalancer")) (not (empty .Values.airflowWrapper.ports.nodePort)) }}
+      nodePort: {{ .Values.airflowWrapper.ports.nodePort }}
+      {{- end }}
+      name: {{ .Values.airflowWrapper.ports.name }}
+  selector:
+   app: {{ include "dss-service.api.name" . }}
+{{- end -}}

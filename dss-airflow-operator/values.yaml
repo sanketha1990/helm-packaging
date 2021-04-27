@@ -1,0 +1,83 @@
+tenant: helm-template
+airflow:
+  name: airflow-webserver
+  replicas: 1 
+  image:
+    registry: REGISTRY_HOST
+    repository: REGISTRY_PROJECT/dss-airflow-operators
+    tag: "BUILD_NUMBER"
+    pullPolicy: IfNotPresent
+  loadex: "n"
+  executor: Local
+  username: airflow
+  password: airflow
+  baseUrlPath: http://10.113.104.24:31353/data-science-studio-airflow-operator
+  security:
+    username: airflow
+    firstname: ngp
+    lastname: admin
+    email: nitin.j@subex.com
+    password: airflow
+
+  db: airflow
+  host: postgres-v1
+  type: ClusterIP
+  ports:
+    postgresPort: 5432
+    airflowPort: 8080
+    nodePort: 30222
+    name: http
+
+  volumeMounts:
+    dssLogs:
+      claimName: logs-pvc
+      path: /usr/local/airflow/logs
+    dssDags:
+      claimName: dags-pvc
+      path: /usr/local/airflow/dags
+    dssDb:
+      claimName: db-pvc
+      path: /usr/local/airflow/db
+    dssData:
+      claimName: data-pvc
+      path: /usr/local/airflow/data
+    dssOutput:
+      claimName: output-pvc
+      path: /usr/local/airflow/output
+    dssModelrepository:
+      claimName: modelrepository-pvc
+      path: /usr/local/airflow/modelrepository
+    dssDaskData:
+      claimName: dask-data-pvc
+      path: /usr/local/airflow/dask-data
+
+  volumes:
+    basePath: /home/subex/charts/stable/airflow-deployment/dss-airflow-operators
+  
+  ingress:
+    apiVersion: networking.k8s.io/v1beta1
+    annotations:
+      class: kong
+      path: false
+    name: data-science-studio-airflow-operator
+    path: data-science-studio-airflow-operator
+  
+postgres:
+  name: postgres-v1
+  image: postgres:9.6.14
+  replicas: 1
+  username: airflow
+  password: airflow
+  db: airflow
+  type: ClusterIP
+  ports:
+    containerPort: 5432
+    name: http
+#################### enable or disable services ######################
+services:
+  ingress:
+      enabled: true
+  airflow:
+      enabled: true
+  postgres:
+      enabled: true
