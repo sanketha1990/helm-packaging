@@ -1,26 +1,27 @@
+{{- if .Values.services.dssServicePostgres.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ngp-postgres
+  name: {{ .Values.dssServiceApplication.postgres.appName }}
   labels:
-    app: ngp-postgres
+    app: {{ .Values.dssServiceApplication.postgres.appName }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ngp-postgres
+      app: {{ .Values.dssServiceApplication.postgres.appName }}
   template:
     metadata:      
       labels:
-        app: ngp-postgres
+        app: {{ .Values.dssServiceApplication.postgres.appName }}
     spec:
       containers:
-        - name: ngp-postgres
-          image: postgres:9.6.14
-          imagePullPolicy: "IfNotPresent"
+        - name: {{ .Values.dssServiceApplication.postgres.appName }}
+          image: {{ .Values.dssServiceApplication.postgres.image }}
+          imagePullPolicy: {{ .Values.dssServiceApplication.postgres.pullPolicy | quote }}
           ports:
-            - containerPort: 5432
-              name: http
+            - containerPort: {{ .Values.dssServiceApplication.postgres.ports.targetPort }}
+              name: {{ .Values.dssServiceApplication.postgres.ports.name }}
           
           env:
           - name: POSTGRES_DB
@@ -29,3 +30,4 @@ spec:
             value: postgres
           - name: POSTGRES_PASSWORD
             value: postgres
+{{- end -}}

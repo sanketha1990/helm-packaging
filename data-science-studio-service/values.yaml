@@ -37,9 +37,25 @@ dssServiceApplication:
     name: dss-app-service-ingress
     path: dss-app-service
 
+  postgres:
+    appName: ngp-postgres
+    image: postgres:9.6.14
+    pullPolicy: "IfNotPresent"
+    type: ClusterIP
+    ports:
+      port: 9001
+      targetPort: 5432
+      name: http
+    environment:
+      username: postgres
+      password: postgres
+      database: datascienceapi
+
 ############################ Enable/Disable application services ##############################
 services:
   dssServiceService:
       enabled: true
   dssServiceIngress:
+      enabled: true
+  dssServicePostgres:
       enabled: true

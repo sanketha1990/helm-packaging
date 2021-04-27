@@ -1,17 +1,18 @@
+{{- if .Values.services.dssServicePostgres.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngp-postgres
+  name: {{ .Values.dssServiceApplication.postgres.appName }}
   labels:
-    app: ngp-postgres
+    app: {{ .Values.dssServiceApplication.postgres.appName }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.dssServiceApplication.postgres.type }}
   ports:
-    - port: 9001
-      targetPort: 5432
-      name: http
+    - port: {{ .Values.dssServiceApplication.postgres.ports.port }}
+      targetPort: {{ .Values.dssServiceApplication.postgres.ports.targetPort }}
+      name: {{ .Values.dssServiceApplication.postgres.ports.name }}
   selector:
-   app: ngp-postgres
-
+   app: {{ .Values.dssServiceApplication.postgres.appName }}
+{{- end -}}
 
 
